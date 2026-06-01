@@ -1,0 +1,52 @@
+## .NET Core / .NET 8+
+bin/
+obj/
+out/
+publish/
+
+## Ambientes e Segredos
+.env
+appsettings.Development.json
+secrets.json
+*.lscache
+## Pacotes NuGet (Geral)
+*.nupkg
+*.snupkg
+# Não ignora o arquivo de configuração, apenas os pacotes instalados
+packages/
+!**/packages/build/
+
+## Visual Studio
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+# Importante para o seu caso: ignora arquivos de upgrade da versão 10 (SLNX)
+
+## Visual Studio Code
+.vscode/
+
+*.code-workspace
+
+## JetBrains Rider
+.idea/
+*.sln.iml
+
+## Testes e Cobertura
+TestResults/
+*.sequenced.json
+coverage.json
+coverlet/
+
+## Sistema Operacional
+.DS_Store
+Thumbs.db
+
+## Logs locais (se sua lib gerar algum para teste)
+*.log
+logs/
+
+.fleet/
+.zed/
+.cursor/
+.cursorrules/

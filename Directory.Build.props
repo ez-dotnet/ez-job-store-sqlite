@@ -1,0 +1,20 @@
+<Project>
+  <PropertyGroup>
+    <Authors>Gabriel Albuquerque</Authors>
+    <Title>EZ.Job.Store.SQLite</Title>
+    <Description>Store SQLite para EZ.Job.Core — job scheduler fire-and-forget de alta performance.</Description>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <Version>1.0.0</Version>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>ez-job;sqlite;job-scheduler</PackageTags>
+    <RepositoryUrl>https://github.com/ez-dotnet/ez-job-store-sqlite</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/ez-dotnet/ez-job-store-sqlite</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+</Project>
