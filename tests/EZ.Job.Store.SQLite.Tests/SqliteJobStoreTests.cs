@@ -1,3 +1,4 @@
+using Xunit;
 using EZ.Job.Core;
 using EZJob.Store.SQLite;
 
