@@ -151,6 +151,8 @@ public sealed class SqliteJobStore : IJobStore
             Status: (JobStatus)reader.GetInt32(5),
             CreatedAt: DateTime.Parse(reader.GetString(6), null, System.Globalization.DateTimeStyles.RoundtripKind),
             Error: reader.IsDBNull(7) ? null : reader.GetString(7),
+            StartedAt: null,
+            CompletedAt: null,
             RecurringJobId: reader.IsDBNull(8) ? null : reader.GetString(8));
     }
 

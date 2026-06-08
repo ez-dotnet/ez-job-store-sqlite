@@ -16,6 +16,7 @@ public static class EZJobSqliteExtensions
         configure(options);
 
         builder.Services.AddSingleton<IJobStore>(_ => new SqliteJobStore(options.ConnectionString));
+        builder.Services.AddSingleton<IRecurringStore>(_ => new SqliteRecurringStore(options.ConnectionString));
 
         return builder;
     }
