@@ -35,7 +35,9 @@ public sealed class SqliteJobStore : IJobStore
                 status          INTEGER NOT NULL DEFAULT 0,
                 created_at      TEXT NOT NULL,
                 error           TEXT,
-                recurring_job_id TEXT
+                recurring_job_id TEXT,
+                started_at      TEXT,
+                completed_at     TEXT
             )
             """;
 
@@ -49,8 +51,8 @@ public sealed class SqliteJobStore : IJobStore
 
         var cmd = conn.CreateCommand();
         cmd.CommandText = """
-            INSERT INTO ez_jobs (id, type_name, method_name, argument_types, arguments, status, created_at, error, recurring_job_id)
-            VALUES ($id, $type_name, $method_name, $argument_types, $arguments, $status, $created_at, $error, $recurring_job_id)
+            INSERT INTO ez_jobs (id, type_name, method_name, argument_types, arguments, status, created_at, error, recurring_job_id, started_at, completed_at)
+            VALUES ($id, $type_name, $method_name, $argument_types, $arguments, $status, $created_at, $error, $recurring_job_id, $started_at, $completed_at)
             """;
 
         cmd.Parameters.AddWithValue("$id", job.Id);
@@ -62,6 +64,8 @@ public sealed class SqliteJobStore : IJobStore
         cmd.Parameters.AddWithValue("$created_at", job.CreatedAt.ToString("O"));
         cmd.Parameters.AddWithValue("$error", job.Error ?? (object)DBNull.Value);
         cmd.Parameters.AddWithValue("$recurring_job_id", job.RecurringJobId ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("$started_at", job.StartedAt?.ToString("O") ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("$completed_at", job.CompletedAt?.ToString("O") ?? (object)DBNull.Value);
 
         await cmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
     }
@@ -109,13 +113,20 @@ public sealed class SqliteJobStore : IJobStore
         await conn.OpenAsync(cancellationToken).ConfigureAwait(false);
 
         var cmd = conn.CreateCommand();
+        var now = DateTime.UtcNow;
+
         cmd.CommandText = """
-            UPDATE ez_jobs SET status = $status, error = $error
+            UPDATE ez_jobs
+            SET status = $status,
+                error = $error,
+                started_at = CASE WHEN $status = 1 THEN COALESCE(started_at, $now) ELSE started_at END,
+                completed_at = CASE WHEN $status IN (2, 3) THEN $now ELSE NULL END
             WHERE id = $id
             """;
 
         cmd.Parameters.AddWithValue("$status", (int)status);
         cmd.Parameters.AddWithValue("$error", error ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("$now", now.ToString("O"));
         cmd.Parameters.AddWithValue("$id", id);
 
         await cmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
@@ -151,8 +162,8 @@ public sealed class SqliteJobStore : IJobStore
             Status: (JobStatus)reader.GetInt32(5),
             CreatedAt: DateTime.Parse(reader.GetString(6), null, System.Globalization.DateTimeStyles.RoundtripKind),
             Error: reader.IsDBNull(7) ? null : reader.GetString(7),
-            StartedAt: null,
-            CompletedAt: null,
+            StartedAt: reader.IsDBNull(9) ? null : DateTime.Parse(reader.GetString(9), null, System.Globalization.DateTimeStyles.RoundtripKind),
+            CompletedAt: reader.IsDBNull(10) ? null : DateTime.Parse(reader.GetString(10), null, System.Globalization.DateTimeStyles.RoundtripKind),
             RecurringJobId: reader.IsDBNull(8) ? null : reader.GetString(8));
     }
 
