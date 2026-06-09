@@ -11,7 +11,7 @@ public sealed class SqliteJobStoreTests
     public async Task AddAsync_should_store_job()
     {
         var store = new SqliteJobStore(ConnectionString);
-        var job = new EZ.Job.Core.Job("test-id", "T", "M", [], [], EZ.Job.Core.JobStatus.Enqueued, System.DateTime.UtcNow, null);
+        var job = new EZ.Job.Core.Job("test-id", "T", "M", [], [], EZ.Job.Core.JobStatus.Enqueued, System.DateTime.UtcNow, null, null, null, null);
 
         await store.AddAsync(job);
         var result = await store.GetAsync("test-id");
